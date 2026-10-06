@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#081413" />
+  <meta name="description" content="Simulador educacional para investigar sinais de radar e avaliar indícios de uma estrutura subterrânea." />
+  <title>Subsolo — Operação Estrutura Escondida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Subsolo — início">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>SUBSOLO<small>LABORATÓRIO DE INVESTIGAÇÃO</small></span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a class="active" href="#investigacao">Investigação</a>
+      <a href="#metodo">Método</a>
+      <a href="#relatorio">Relatório</a>
+      <a href="#hipotese">Anotações gerais</a>
+    </nav>
+    <button class="outline-button" id="printButton" type="button">Imprimir relatório</button>
+  </header>
+
+  <main id="inicio">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> OPERAÇÃO 4 · ESTAÇÃO CENTRAL</p>
+        <h1 id="hero-title">O que existe<br /><em>sob a cidade?</em></h1>
+        <p class="hero-lede">Analise sinais de radar, compare profundidades e teste a hipótese de uma estrutura construída no subsolo.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#investigacao">Iniciar investigação <span aria-hidden="true">↘</span></a>
+          <a class="text-link" href="#relatorio">Ler o pré-relatório <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="Representação em corte das camadas do subsolo">
+        <div class="scan-label label-surface">NÍVEL DA RUA <b>0 m</b></div>
+        <div class="scan-label label-soil">SOLO COMUM <b>−2,4 m</b></div>
+        <div class="scan-label label-anomaly">ANOMALIA <b>−7,0 m</b></div>
+        <div class="city-line" aria-hidden="true">
+          <span class="building b1"></span><span class="building b2"></span><span class="building b3"></span><span class="lamp"></span>
+        </div>
+        <div class="ground-layer layer-one"></div>
+        <div class="ground-layer layer-two"></div>
+        <div class="buried-shape" aria-hidden="true"><span></span><span></span></div>
+        <div class="radar-beam" aria-hidden="true"></div>
+        <div class="depth-axis" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </section>
+
+    <section class="case-strip" aria-label="Resumo do caso">
+      <div><span>01</span><p><strong>Sinais anômalos</strong>Radar detectou um padrão diferente do solo comum.</p></div>
+      <div><span>02</span><p><strong>Porção sul</strong>Os sinais mais fortes formam um contorno incompleto.</p></div>
+      <div><span>03</span><p><strong>Profundidade uniforme</strong>Pontos vizinhos variam pouco, sugerindo algo nivelado.</p></div>
+    </section>
+
+    <section class="investigation section-wrap" id="investigacao" aria-labelledby="investigation-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow"><span></span> MESA DE ANÁLISE</p>
+          <h2 id="investigation-title">Mapa do escaneamento</h2>
+        </div>
+        <p>Selecione um ponto da grade, altere a leitura e observe como as evidências mudam.</p>
+      </div>
+
+      <div class="lab-grid">
+        <article class="map-card">
+          <div class="card-topline">
+            <div class="segmented" role="group" aria-label="Visualização do mapa">
+              <button class="active" type="button" data-mode="intensity">Intensidade</button>
+              <button type="button" data-mode="depth">Profundidade</button>
+            </div>
+            <div class="map-legend" aria-label="Legenda">
+              <span><i class="dot low"></i>solo comum</span>
+              <span><i class="dot medium"></i>transição</span>
+              <span><i class="dot high"></i>sinal forte</span>
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="scanCanvas" width="900" height="610" aria-label="Mapa interativo dos pontos de radar"></canvas>
+            <div class="north-marker" aria-hidden="true">N <span>↑</span></div>
+            <div class="south-badge">PORÇÃO SUL</div>
+            <div class="canvas-tooltip" id="canvasTooltip" role="status"></div>
+          </div>
+          <p class="demo-note"><span>i</span> Mapa demonstrativo criado a partir do padrão descrito no memorando; não representa medições reais da prefeitura.</p>
+        </article>
+
+        <aside class="analysis-panel" aria-label="Painel de análise">
+          <div class="panel-header">
+            <p class="eyebrow"><span></span> LEITURA SELECIONADA</p>
+            <strong id="pointName">Ponto E5</strong>
+            <small id="pointCoords">Coordenadas 40, 50</small>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label"><label for="intensityRange">Intensidade do sinal</label><output id="intensityOutput">86%</output></div>
+            <input id="intensityRange" type="range" min="0" max="100" value="86" />
+            <div class="range-labels"><span>fraco</span><span>forte</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label"><label for="depthRange">Profundidade</label><output id="depthOutput">7,0 m</output></div>
+            <input id="depthRange" type="range" min="1" max="12" step="0.1" value="7" />
+            <div class="range-labels"><span>superfície</span><span>12 m</span></div>
+          </div>
+
+          <button class="primary-button full" id="saveReading" type="button">Registrar medição <span aria-hidden="true">＋</span></button>
+          <button class="ghost-button full" id="resetData" type="button">Restaurar dados iniciais</button>
+
+          <div class="mini-divider"></div>
+          <div class="live-stats">
+            <div><span>Sinais fortes</span><strong id="strongCount">—</strong></div>
+            <div><span>Variação de profundidade</span><strong id="depthVariation">—</strong></div>
+            <div><span>Concentração ao sul</span><strong id="southConcentration">—</strong></div>
+          </div>
+        </aside>
+      </div>
+
+      <article class="verdict-card" aria-live="polite">
+        <div class="score-ring" id="scoreRing"><span id="scoreValue">0</span><small>/ 100</small></div>
+        <div class="verdict-copy">
+          <p class="eyebrow"><span></span> ÍNDICE DE EVIDÊNCIA</p>
+          <h3 id="verdictTitle">Analisando dados…</h3>
+          <p id="verdictText">O sistema está comparando a intensidade, a uniformidade da profundidade e a distribuição dos sinais.</p>
+        </div>
+        <div class="verdict-status"><i id="statusLight"></i><span>HIPÓTESE ATUAL</span><strong id="hypothesisStatus">EM ANÁLISE</strong></div>
+      </article>
+    </section>
+
+    <section class="method-section" id="metodo" aria-labelledby="method-title">
+      <div class="section-wrap method-inner">
+        <div class="section-heading light">
+          <div>
+            <p class="eyebrow"><span></span> COMO O ÍNDICE É FORMADO</p>
+            <h2 id="method-title">Quatro pistas, uma conclusão cuidadosa.</h2>
+          </div>
+          <p>O resultado indica força da evidência dentro da simulação. Ele não substitui uma investigação geofísica real.</p>
+        </div>
+        <div class="method-grid">
+          <article><span>01</span><i class="method-icon signal-icon"></i><h3>Intensidade</h3><p>Sinais mais fortes podem indicar mudança de material ou uma superfície enterrada.</p><b>peso 30%</b></article>
+          <article><span>02</span><i class="method-icon level-icon"></i><h3>Regularidade</h3><p>Profundidades próximas entre pontos vizinhos sugerem uma estrutura nivelada.</p><b>peso 30%</b></article>
+          <article><span>03</span><i class="method-icon contour-icon"></i><h3>Continuidade</h3><p>Pontos fortes conectados ajudam a formar limites ou um contorno reconhecível.</p><b>peso 25%</b></article>
+          <article><span>04</span><i class="method-icon compass-icon"></i><h3>Localização</h3><p>A concentração das anomalias na porção sul reforça o padrão descrito.</p><b>peso 15%</b></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section section-wrap" id="relatorio" aria-labelledby="report-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow"><span></span> PRÉ-RELATÓRIO DA EQUIPE</p>
+          <h2 id="report-title">O que pensamos em grupo</h2>
+        </div>
+        <button class="outline-button dark" id="exportButton" type="button">Exportar dados (.csv)</button>
+      </div>
+
+      <div class="report-grid">
+        <article class="report-main">
+          <span class="report-number">01</span>
+          <h3>O que sabemos até agora?</h3>
+          <p>O radar de solo identificou sinais anômalos principalmente na porção sul da área da futura estação. Os pontos mais fortes parecem formar um contorno e aparecem em profundidade pouco variável. O padrão não consta nas plantas oficiais nem em levantamentos anteriores.</p>
+        </article>
+        <article class="report-accent">
+          <span class="report-number">02</span>
+          <h3>Nossa hipótese inicial</h3>
+          <p>Pode existir uma estrutura construída pelo ser humano, pois limites organizados e profundidade uniforme combinam mais com paredes, pisos ou fundações do que com uma formação natural irregular.</p>
+        </article>
+      </div>
+
+      <div class="question-list">
+        <details open>
+          <summary><span>a</span> O que o contorno sugere sobre o formato?<i>＋</i></summary>
+          <p>Ele sugere limites definidos e alguma geometria regular, possivelmente formada por linhas retas ou um perímetro. Ainda não há dados suficientes para afirmar que seja um retângulo.</p>
+        </details>
+        <details>
+          <summary><span>b</span> Por que a profundidade uniforme é importante?<i>＋</i></summary>
+          <p>Construções costumam ser planejadas e niveladas. Formações naturais também podem criar superfícies regulares, mas em geral apresentam mais variações; por isso essa pista reforça a hipótese sem comprová-la sozinha.</p>
+        </details>
+        <details>
+          <summary><span>c</span> Que formato geral desenharíamos?<i>＋</i></summary>
+          <p>Um contorno geométrico ainda incompleto na porção sul, com trechos retilíneos e profundidade semelhante entre os pontos observados.</p>
+        </details>
+        <details>
+          <summary><span>d</span> Que tipo de construção poderia ser?<i>＋</i></summary>
+          <p>Pode ser parte de uma fundação, parede, galeria ou outra construção subterrânea antiga. Túnel, abrigo ou canalização são possibilidades, mas não podem ser confirmados sem novos dados.</p>
+        </details>
+      </div>
+
+      <div class="unknown-grid">
+        <article><p class="eyebrow"><span></span> O QUE AINDA FALTA</p><h3>Não sabemos o tamanho, o formato completo, o material, a idade ou a função da possível estrutura.</h3></article>
+        <article><p class="eyebrow"><span></span> PRÓXIMO DADO ESSENCIAL</p><h3>Planta ponto a ponto do radar, com coordenadas, profundidade e intensidade de cada leitura.</h3></article>
+      </div>
+    </section>
+
+    <section class="guess-section section-wrap" id="hipotese" aria-labelledby="hypothesis-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow"><span></span> REGISTRO DE HIPÓTESE</p>
+          <h2 id="hypothesis-title">Anotações e estrutura provável</h2>
+        </div>
+        <p>Registre observações gerais e teste sua hipótese sobre o que pode estar sob a cidade.</p>
+      </div>
+
+      <div class="guess-tabs" role="tablist" aria-label="Abas de investigação">
+        <button class="tab-button active" type="button" data-tab-target="notesTab">Anotações gerais</button>
+        <button class="tab-button" type="button" data-tab-target="hypothesisTab">Hipótese</button>
+      </div>
+
+      <div class="tab-panel active" id="notesTab" role="tabpanel">
+        <div class="guess-grid">
+          <div class="guess-column">
+            <label class="field-label" for="noteSummary">Resumo geral</label>
+            <textarea id="noteSummary" rows="5" data-observation-field placeholder="Escreva o que você observou..."></textarea>
+          </div>
+
+          <div class="guess-column">
+            <div class="mini-form-grid">
+              <div class="guess-field">
+                <label for="fieldDepth">Profundidade prevista</label>
+                <input id="fieldDepth" type="text" data-observation-field placeholder="Ex.: 6,8 m" />
+              </div>
+              <div class="guess-field">
+                <label for="fieldMaterial">Material</label>
+                <input id="fieldMaterial" type="text" data-observation-field placeholder="Ex.: concreto / metal" />
+              </div>
+              <div class="guess-field">
+                <label for="fieldLocation">Localização</label>
+                <input id="fieldLocation" type="text" data-observation-field placeholder="Ex.: porção sul" />
+              </div>
+              <div class="guess-field">
+                <label for="fieldShape">Formato</label>
+                <input id="fieldShape" type="text" data-observation-field placeholder="Ex.: retangular / circular" />
+              </div>
+            </div>
+          </div>
+
+          <div class="guess-column full-width">
+            <label class="field-label" for="fieldObservations">Observações específicas</label>
+            <textarea id="fieldObservations" rows="4" data-observation-field placeholder="Inclua ponto, profundidade, continuidade e qualquer detalhe importante..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="hypothesisTab" role="tabpanel">
+        <div class="guess-guess-panel">
+          <div class="guess-title">
+            <p class="eyebrow"><span></span> HIPÓTESE</p>
+            <h3>O que você acha que é a estrutura?</h3>
+          </div>
+
+          <div class="guess-answer-box">
+            <label for="guessStructure">Sua resposta</label>
+            <input id="guessStructure" type="text" placeholder="Ex.: Abrigo Subterrâneo" />
+            <button id="checkGuess" class="primary-button" type="button">Verificar hipótese</button>
+          </div>
+
+          <div id="guessFeedback" class="guess-feedback" aria-live="polite">
+            Tente identificar a função da estrutura com base nos dados e nas observações do mapa.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="caution section-wrap">
+      <div class="caution-icon">!</div>
+      <div><strong>Limite científico</strong><p>Um radar de solo detecta contrastes no subsolo, mas não identifica sozinho o material ou a origem. A confirmação exige planta completa, perfis de radar, análise técnica e, se segura e autorizada, verificação no local.</p></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand inverse"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>SUBSOLO<small>OPERAÇÃO 4 · 2026</small></span></div>
+    <p>Projeto educacional de investigação científica<br />Arqueologia + Geoprocessamento</p>
+    <a href="#inicio">Voltar ao topo ↑</a>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="notes-ui">
+    <button id="notesToggle" class="notes-toggle" type="button" aria-expanded="false">Anotações</button>
+    <aside class="notes-panel" id="notesPanel" aria-hidden="true">
+      <div class="notes-header">
+        <strong>Anotações</strong>
+        <button id="closeNotes" class="ghost-button" type="button">Fechar</button>
+      </div>
+      <div class="notes-actions">
+        <button id="addNotePoint" class="primary-button">Nova nota (ponto)</button>
+        <button id="addNoteGlobal" class="ghost-button">Nova nota (geral)</button>
+      </div>
+      <ul id="notesList" class="notes-list" aria-live="polite"></ul>
+      <div class="note-editor" id="noteEditor" hidden>
+        <textarea id="noteText" rows="4" placeholder="Escreva a nota..."></textarea>
+        <div class="note-editor-actions">
+          <button id="saveNoteBtn" class="primary-button">Salvar nota</button>
+          <button id="cancelNoteBtn" class="ghost-button">Cancelar</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
